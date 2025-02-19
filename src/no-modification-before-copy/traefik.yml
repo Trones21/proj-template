@@ -1,0 +1,49 @@
+entryPoints:
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"
+  metrics:
+    address: ":8082"
+
+providers:
+  docker:
+    exposedByDefault: false
+
+api:
+  dashboard: false
+
+log:
+  level: DEBUG  # TRACE, DEBUG, INFO, WARN, ERROR, FATAL, PANIC https://doc.traefik.io/traefik/observability/logs/
+  maxAge: 7
+ 
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: trones.adm@gmail.com # this doesnt actually matter for validation... its just so traefik can notify me if my cert will expire soon
+      storage: /letsencrypt/acme.json
+      httpChallenge:
+        entryPoint: web
+
+accessLog:
+  filePath: "/var/log/traefik/access.log"  # Change to a location Traefik can write to
+  addInternals: true
+  bufferingSize: 100  # Reduce disk writes
+  filters:
+    statusCodes: ["400-499", "500-599"]  # (Optional) Only log errors
+
+
+# tracing:
+#   serviceName: traefik
+#   spanNameLimit: 128
+#   jaeger:
+#     samplingServerURL: http://jaeger:5778/sampling
+#     localAgentHostPort: jaeger:6831
+#     samplingType: const
+#     samplingParam: 1.0
+
+metrics:
+  prometheus:
+    entryPoint: metrics
+    addEntryPointsLabels: true
+    addServicesLabels: true

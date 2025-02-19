@@ -1,0 +1,75 @@
+[
+  {
+    "name": "Would Recommend",
+    "description": "Overall recommendation rating for the conference.",
+    "type": "core",
+    "is_global": true,
+    "ranges": [
+      { "range_start": 0.0, "range_end": 0.5, "comment": "Few attendees would recommend." },
+      { "range_start": 0.5, "range_end": 2.5, "comment": "Mixed feelings about this conference." },
+      { "range_start": 2.5, "range_end": 4.0, "comment": "Many attendees found it worthwhile." },
+      { "range_start": 4.0, "range_end": 5.0, "comment": "Highly recommended by attendees!" }
+    ]
+  },
+  {
+    "name": "Content Quality",
+    "description": "Overall quality of the conference sessions.",
+    "type": "core",
+    "is_global": true,
+    "ranges": [
+      { "range_start": 0.0, "range_end": 0.5, "comment": "Unengaging and shallow content." },
+      { "range_start": 0.5, "range_end": 2.5, "comment": "Content quality could improve." },
+      { "range_start": 2.5, "range_end": 4.0, "comment": "Good quality, with some highlights." },
+      { "range_start": 4.0, "range_end": 5.0, "comment": "Outstanding, deep, and engaging sessions." }
+    ]
+  },
+  {
+    "name": "Value for Money",
+    "description": "The perceived value of the conference compared to its cost.",
+    "type": "core",
+    "is_global": true,
+    "ranges": [
+      { "range_start": 0.0, "range_end": 0.5, "comment": "Overpriced for the experience." },
+      { "range_start": 0.5, "range_end": 2.5, "comment": "Not great value overall." },
+      { "range_start": 2.5, "range_end": 4.0, "comment": "Good value for most attendees." },
+      { "range_start": 4.0, "range_end": 5.0, "comment": "Excellent value for the cost!" }
+    ]
+  },
+    {
+      "name": "Venue Quality",
+      "description": "Rate the quality of the conference venue.",
+      "type": "standard",
+      "is_global": true,
+      "ranges": [
+        { "range_start": 0.0, "range_end": 0.5, "comment": "Poor venue quality." },
+        { "range_start": 0.5, "range_end": 2.5, "comment": "Venue quality needs improvement." },
+        { "range_start": 2.5, "range_end": 4.0, "comment": "Good venue with a few drawbacks." },
+        { "range_start": 4.0, "range_end": 5.0, "comment": "Excellent venue!" }
+      ]
+    },
+    {
+      "name": "Networking Opportunities",
+      "description": "Rate the networking opportunities provided by the conference.",
+      "type": "standard",
+      "is_global": true,
+      "ranges": [
+        { "range_start": 0.0, "range_end": 0.5, "comment": "Few or no networking opportunities." },
+        { "range_start": 0.5, "range_end": 2.5, "comment": "Limited networking opportunities." },
+        { "range_start": 2.5, "range_end": 4.0, "comment": "Good opportunities for networking." },
+        { "range_start": 4.0, "range_end": 5.0, "comment": "Outstanding networking opportunities!" }
+      ]
+    },
+    {
+      "name": "Food Quality",
+      "description": "Rate the quality of the food and refreshments provided.",
+      "type": "standard",
+      "is_global": true,
+      "ranges": [
+        { "range_start": 0.0, "range_end": 0.5, "comment": "Poor quality food." },
+        { "range_start": 0.5, "range_end": 2.5, "comment": "Average quality food, could be better." },
+        { "range_start": 2.5, "range_end": 4.0, "comment": "Good quality food with some variety." },
+        { "range_start": 4.0, "range_end": 5.0, "comment": "Excellent food and refreshments!" }
+      ]
+    }
+  ]
+  

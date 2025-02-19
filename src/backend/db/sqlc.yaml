@@ -1,0 +1,24 @@
+version: "1"
+packages:
+  - path: "sqlcgen"
+    name: "public"  # package name for generated code
+    queries: "./queries/public"
+    schema: "./migrations/tables/public"
+    engine: "postgresql"
+    emit_json_tags: true
+
+  - path: "sqlcgen/anotherSchema"
+    name: "anotherSchema" # package name for generated code
+    queries: "./queries/anotherSchema"
+    schema: "./migrations/tables/anotherSchema"
+    engine: "postgresql"
+    emit_json_tags: true  # Optional
+  
+  # for cross schema queries (untested)
+  # - path: "sqlcgen/crossschema"
+  #   name: "crossschema" # package name for generated code
+  #   queries: "./queries/crossschema"
+  #   schema:
+  #     - "./migrations/public"
+  #     - "./migrations/marketing"
+  #   engine: "postgresql"

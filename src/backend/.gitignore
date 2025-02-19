@@ -1,0 +1,5 @@
+
+# this is created from the os env vars so that it env vars can be pulled into docker
+.env_prod 
+#and when you want to run locally in the containers (modify as desired, based on how you want to run)
+.env_local 
