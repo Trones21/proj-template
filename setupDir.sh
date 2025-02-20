@@ -46,18 +46,18 @@ mkdir backend frontend _images request_flows _top_level_docs
 ## pk_host is also here, but since it's unlikely that i already have the domain chosen, i am not concerned with that, juts CTRL + F 
 
 # Deployment 
-sed "s|pk_projName|$NAME|g" "$TEMPLATE_SRC_DIR/build_and_deploy_local.sh" > "./build_and_deploy_local.sh"
-sed "s|pk_projName|$NAME|g" "$TEMPLATE_SRC_DIR/deploy.sh" > "./deploy.sh"
+sed "s|pk_projName|$NAME|g" $TEMPLATE_SRC_DIR/build_and_deploy_local.sh > ./build_and_deploy_local.sh
+sed "s|pk_projName|$NAME|g" $TEMPLATE_SRC_DIR/deploy.sh > ./deploy.sh
 
 # Env Vars 
-sed "s|pk_projName|$NAME|g" "$TEMPLATE_SRC_DIR/env/local_backend.sh" > "~/env_setup/$NAME/local_backend.sh"
-sed "s|pk_projName|$NAME|g" "$TEMPLATE_SRC_DIR/env/prod_backend.sh" > "~/env_setup/$NAME/prod_backend.sh"
+sed "s|pk_projName|$NAME|g" $TEMPLATE_SRC_DIR/env/local_backend.sh > ~/env_setup/$NAME/local_backend.sh
+sed "s|pk_projName|$NAME|g" $TEMPLATE_SRC_DIR/env/prod_backend.sh > ~/env_setup/$NAME/prod_backend.sh
 
 # Docker Compose 
-sed "s|pk_projName|$NAME|g" "$TEMPLATE_SRC_DIR/compose_local.yaml" > "./compose_local.yaml"
-sed "s|pk_projName|$NAME|g" "$TEMPLATE_SRC_DIR/env/prod_backend.sh" > "~/env_setup/$NAME/prod_backend.sh"
+sed "s|pk_projName|$NAME|g" $TEMPLATE_SRC_DIR/compose_local.yaml > ./compose_local.yaml
+sed "s|pk_projName|$NAME|g" $TEMPLATE_SRC_DIR/compose_deploy.yaml > ./compose_deploy.yaml
 
-cp "$TEMPLATE_SRC_DIR/no-modification-before-copy/" ./ 
+cp -r $TEMPLATE_SRC_DIR/no-modification-before-copy/ ./ 
 
 echo "To Do: Set ssh login on deploy.sh"
 echo "To Do: Navigate to ~/env_setup/$NAME and set environment variables for local and prod"
@@ -65,35 +65,29 @@ echo "To Do: Navigate to ~/env_setup/$NAME and set environment variables for loc
 
 #### Project SubDirs #### 
 
-### Add some top level Docs
-echo "Adding top level docs"
-cd ./top-level-docs
-cp $TEMPLATE_SRC_DIR/USEFUL.md ./USEFUL.md
-touch ./README.md
-cd ../
+# ### Add some top level Docs
+# echo "Adding top level docs"
+# cd ./_top_level_docs
+# cp $TEMPLATE_SRC_DIR/USEFUL.md ./USEFUL.md
+# touch ./README.md
+# cd ../
 
 ### Create backend subdirs & files 
 echo "Creating backend subdirs & files "
-cp $TEMPLATE_SRC_DIR/backend/ ./backend
-
+cp -r "$TEMPLATE_SRC_DIR/backend/" "$SCRIPT_DIR/$NAME/backend"
 # Look for Pk Proj name in files and modify
-find "./backend" -type f -exec sed -i "s|pk_projName|$NAME|g" {} \;
+find ./backend -type f -exec sed -i "s|pk_projName|$NAME|g" {} \;
 
-cd ../
 
 ### Create request_flows subdirs & files 
 echo "Creating request_flows subdirs & files"
-cp $TEMPLATE_SRC_DIR/request_flows/ ./request_flows
-cd ./request_flows
-
+cp -r "$TEMPLATE_SRC_DIR/request_flows/" "$SCRIPT_DIR/$NAME/request_flows"
 # Look for Pk Proj name in files and modify
-find "./request_flows" -type f -exec sed -i "s|pk_projName|$NAME|g" {} \;
+find ./request_flows -type f -exec sed -i "s|pk_projName|$NAME|g" {} \;
 
-cd ../
 
 ### Frontend will be created manually for now
 echo "Frontend will be created manually for now. Use Quasar CLI"
-
 
 echo "Done. Install dependencies and run."
 
