@@ -66,24 +66,24 @@ echo "To Do: Navigate to ~/env_setup/$NAME and set environment variables for loc
 #### Project SubDirs #### 
 
 # ### Add some top level Docs
-# echo "Adding top level docs"
-# cd ./_top_level_docs
-# cp $TEMPLATE_SRC_DIR/USEFUL.md ./USEFUL.md
-# touch ./README.md
-# cd ../
+echo "Adding top level docs"
+cd ./_top_level_docs
+cp $TEMPLATE_SRC_DIR/USEFUL.md ./USEFUL.md
+touch ./README.md
+cd ../
 
 ### Create backend subdirs & files 
 echo "Creating backend subdirs & files "
-cp -r "$TEMPLATE_SRC_DIR/backend/" "$SCRIPT_DIR/$NAME/backend"
+cp -r "$TEMPLATE_SRC_DIR/backend" "$SCRIPT_DIR/$NAME/"
 # Look for Pk Proj name in files and modify
-find ./backend -type f -exec sed -i "s|pk_projName|$NAME|g" {} \;
+find "$SCRIPT_DIR/$NAME/backend" -type f -exec sed -i "s|pk_projName|$NAME|g" {} \;
 
 
 ### Create request_flows subdirs & files 
 echo "Creating request_flows subdirs & files"
-cp -r "$TEMPLATE_SRC_DIR/request_flows/" "$SCRIPT_DIR/$NAME/request_flows"
+cp -r "$TEMPLATE_SRC_DIR/request_flows" "$SCRIPT_DIR/$NAME/"
 # Look for Pk Proj name in files and modify
-find ./request_flows -type f -exec sed -i "s|pk_projName|$NAME|g" {} \;
+find "$SCRIPT_DIR/$NAME/request_flows" -type f -exec sed -i "s|pk_projName|$NAME|g" {} \;
 
 
 ### Frontend will be created manually for now
@@ -91,4 +91,4 @@ echo "Frontend will be created manually for now. Use Quasar CLI"
 
 echo "Done. Install dependencies and run."
 
-mv $SCRIPT_DIR/$NAME ~/$NAME
+mv $SCRIPT_DIR/$NAME ~/Documents/git_repos/$NAME
