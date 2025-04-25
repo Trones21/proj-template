@@ -1,8 +1,3 @@
-Got it — that intro you have is **already good** for a basic root-level `README.md`.  
-But since you're polishing things, here's a slightly cleaned-up, sharper version that fits the style you just used for the Go one:
-
----
-
 # Project Templates
 
 A collection of project templates for different languages and frameworks.  
