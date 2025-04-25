@@ -1,0 +1,1 @@
+Only the project files created, and some find and replace done (to get pk_projName in there so its ready for sed)... still need to create the deployment scripts, docker, etc (just copied over the create_project.sh from the go version)
