@@ -88,6 +88,7 @@ sed "s|pk_projName|$NAME|g" $TEMPLATE_SRC_DIR/compose_local.yaml > ./compose_loc
 sed "s|pk_projName|$NAME|g" $TEMPLATE_SRC_DIR/compose_deploy.yaml > ./compose_deploy.yaml
 
 cp -r $TEMPLATE_SRC_DIR/no-modification-before-copy/ ./ 
+mv ./no-modification-before-copy/frontend-Dockerfile ../frontend/Dockerfile
 
 bold_blue "To Do: Set ssh login on deploy.sh"
 bold_blue "To Do: Navigate to ~/env_setup/$NAME and set environment variables for local and prod"
@@ -130,3 +131,17 @@ DESTINATION_EXPANDED=$(eval echo "$DESTINATION")
 
 mkdir -p "$DESTINATION_EXPANDED"  # Ensure destination exists
 mv "$SCRIPT_DIR/$NAME" "$DESTINATION_EXPANDED/$NAME"
+
+CMD="cd \"$DESTINATION_EXPANDED/$NAME\""
+echo -e "\nDone. Run this to enter the folder:"
+echo "$CMD"
+
+if command -v xclip &> /dev/null; then
+  echo "$CMD" | xclip -selection clipboard
+  echo "(Copied to clipboard via xclip ✅)"
+elif command -v wl-copy &> /dev/null; then
+  echo "$CMD" | wl-copy
+  echo "(Copied to clipboard via wl-copy ✅)"
+else
+  echo "(Clipboard tool not found — copy manually)"
+fi

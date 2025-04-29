@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# opi = Other peoples images (notice that we are only removing the frontend and backend images)
+
 # Stop all running containers
 echo "Stopping all running containers..."
 docker stop $(docker ps -q)

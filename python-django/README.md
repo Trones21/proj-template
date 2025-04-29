@@ -88,6 +88,8 @@ No unnecessary bloat. No weird dependencies. Just a clean foundation.
 
 ## To-Do After Generation
 
+### Backend
+
 Open Your Project Folder:
 
 ```bash
@@ -149,15 +151,85 @@ python manage.py createsuperuser
 
 ✅ Start developing! 🚀
 
-### Optional/Later:
+You can run a simple test by loading the fixtures and running the login_test in the test runner.
+`<Pk_ToDo - Add Video without the example_app items in the list (just the test login) (will create after cleaning noCRUD implementation from examples)>`
 
-Update `deploy.sh`:
-
-- Set your SSH login credentials for deployment.
+### Frontend
 
 Set up the frontend:
 
 - Use [Quasar CLI](https://quasar.dev/start/installation) or your preferred frontend stack.
+
+### Docker
+
+#### TL;DL — Docker in 30 Seconds
+
+This isnt a tutorial on docker, but i think it is important to clarify some basics about how docker works:
+
+_(See `DOCKER_REF.md` for deeper explanations.)_
+
+---
+
+1. **Build an image:**
+
+   ```bash
+   docker build -f <Dockerfile> -t <image-name>:<tag> <build-context>
+   ```
+
+2. **Run a container:**
+
+   ```bash
+   docker run -d -p <machine-port>:<container-port> --name <container-name> <image-name>:<tag>
+   ```
+
+   _or run multiple containers:_
+
+   ```bash
+   docker compose -f ./compose_local.yaml up -d
+   ```
+
+3. **Containers talk over Docker’s internal network** by **service name**.
+
+4. **Jump into a container:**
+
+   ```bash
+   docker exec -it <container-name> /bin/bash
+   ```
+
+---
+
+# My Process (As Decoupled as possible)
+
+- **Verify** frontend and backend images separately first (`verify_docker_builds.sh`).
+  - `docker compose` **NEVER** has build steps - use commands / shell scripts for more control
+- **Deploy** both images to the server (`deploy.sh`).
+
+#### Verify Docker Builds
+
+Open `verify_docker_builds.sh`.
+
+Start simple: comment out either the backend or frontend and get one image building cleanly.  
+Once both are building, verify communication:
+
+```txt
+Frontend <-> Backend <-> DB (local Postgres, not containerized)
+```
+
+#### Deployment
+
+Once that’s working, move on to `deploy.sh`.
+
+By this point, you should have a solid handle on where config issues may arise — and be comfortable with key Docker workflows:
+
+- Multi-step Docker builds
+- Jumping into containers with `docker exec` (feels just like SSH — it's just a little isolated Linux box)
+- Troubleshooting cross-container communication
+- Making files available to the container **after** build (e.g., bind mounts vs baking files in)
+
+Also check out:
+
+- `DOCKER_REF.md` — for deeper Docker context
+- The "Deployment Summary" section below — for step-by-step remote deployment guidance (basically the steps that deploy.sh takes if you were to do them manually)
 
 ---
 
@@ -180,13 +252,14 @@ I keep the same basic structure for all my applications. Note that Quasar is not
 
 ```
 
-### Deployment
+### Deployment Summary
 
-Current process is build the containers locally (with prod settings) and copy to server
+Current process is **build the images locally** (with prod settings) and copy (scp) to server
 
-- Remember to backup RDS and migrate(update db schema)!! This is integrated into deployment
+- ⚠️ Remember to backup RDS and migrate(update db schema)!! Prod DB operations are not handled by `deploy.sh`
 
-This is all in deploy.sh/build_and_deploy.sh.. but here is the general process. Look to the frontend and backend readmes for deep guidance on their containers.
+Everything below is automated in `deploy.sh`, but here’s the general flow.  
+For deeper container-specific details, see the frontend and backend READMEs.
 
 #### On Dev Machine
 
@@ -233,3 +306,9 @@ Traefik as the Reverse Proxy:
 4. Flexibility for Future Changes:
 
 - If I ever need to change the path mapping (e.g., /api to /backend), you only update Traefik’s config without touching the frontend or backend code.
+
+## Misc Reminders:
+
+Update `deploy.sh`:
+
+- Set your SSH login credentials for deployment.

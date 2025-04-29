@@ -1,5 +1,5 @@
 # This file uses our pre-built images rather than building during the compose
-# run with docker compose -f compose_pre_built.yaml up
+# run with docker compose -f compose_local.yaml up
 services:
   traefik:
     image: traefik:v2.10
@@ -7,7 +7,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "8080:8080"  # Traefik Dashboard
+      - "8080:8080" # Traefik Dashboard
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik.yml:/etc/traefik/traefik.yml
@@ -17,7 +17,7 @@ services:
     image: frontend:latest
     container_name: pk_projName-frontend
     ports:
-      - "9000:80"  # Expose frontend on port 9000
+      - "9000:80" # Expose frontend on port 9000
     labels:
       - "traefik.enable=true"
       # - "traefik.http.routers.frontend.rule=Host(`frontend.local`)" # use for local containers
@@ -32,7 +32,7 @@ services:
     container_name: pk_projName-backend
     # command: ["sh", "-c", "while true; do sleep 30; done"] #override if the container doesnt stay up (b/c backend app exiting immediately)
     ports:
-      - "4500:8080"  # Expose backend on port 4500 for local testing
+      - "4500:8080" # Expose backend on port 4500 for local testing
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"
@@ -40,10 +40,9 @@ services:
       - "traefik.http.middlewares.strip-api-prefix.stripprefix.prefixes=/api" # allows use to have root routes in go app without the api prefix, but use the api prefix when calling from external sources
       - "traefik.http.routers.backend.middlewares=strip-api-prefix" # middleware for above
     env_file:
-      - ./backend/.env_local  # Load backend environment variables
+      - ./backend/.env_local # Load backend environment variables
     extra_hosts:
       - "host.docker.internal:host-gateway" #adding my machine as a host (for postgres access)
     depends_on:
       - traefik
     restart: no
-

@@ -1,3 +1,6 @@
+# This is *not* for normal dev use.
+# It's just a sanity check that containers build and the stack spins up before a real deploy.
+
 # This will build the containers and run them locally
 # Connect to local postgres 
 
@@ -18,8 +21,8 @@ docker build -f ./backend/Dockerfile -t $BACKEND_IMAGE ./backend
 # Save images
 #  not really necessary -- the only reason i do that in the manual deploy is to transfer them over 
 
-docker compose -f ./compose_pre_built.yaml up -d
-echo "docker compose -f ./compose_pre_built.yaml up -d"
+docker compose -f ./compose_local.yaml up -d
+echo "docker compose -f ./compose_local.yaml up -d"
 
 ## This is what it would look like if you wanted to run all of them manually, but you run nto difficulties unless you do a full teardown of all images and containers each time 
 ## its good to have it as a reference though
