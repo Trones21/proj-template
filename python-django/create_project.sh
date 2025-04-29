@@ -122,7 +122,8 @@ cd ../
 
 
 ### Frontend will be created manually for now
-printf "\nFrontend will be created manually for now."
+cp -r "$TEMPLATE_SRC_DIR/frontend" "$SCRIPT_DIR/$NAME/"
+printf "\nFrontend will be created manually for now. Only nginx and Dockerfile transferred "
 echo
 printf "\nDone. Install dependencies and run.\n"
 
