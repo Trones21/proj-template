@@ -1,39 +1,3 @@
-# Django Project Generator
-
-A minimal yet powerful project generator for Django backends.  
-It scaffolds a complete Django backend, request flow clients for API testing, and basic deployment scripts — so you can start building immediately.
-
-No unnecessary bloat. No weird dependencies. Just a clean foundation.
-
----
-
-## Usage
-
-1. Make sure the generator script (`create_project.sh`) is executable:
-
-   ```bash
-   chmod +x create_project.sh
-   ```
-
-2. Run the generator:
-
-   ```bash
-   ./create_project.sh -n <your_project_name>
-   ```
-
-3. After running, your project will be created under:
-   ```
-   ~/Documents/git_repos/<your_project_name>/
-   ```
-   and environment setup files will be placed under:
-   ```
-   ~/env_setup/<your_project_name>/
-   ```
-
----
-
-## What's Included
-
 ### Project Structure
 
 - **backend/** — Django backend starter with:
@@ -49,12 +13,11 @@ No unnecessary bloat. No weird dependencies. Just a clean foundation.
   - Dockerfile and supporting scripts
   - `README.md` - BAckend specific readme
 
-- **request_flows/** — Lightweight Python client for:
+- **request_flows/** — [noCRUD](https://github.com/Trones21/noCRUD/tree/main/python) - Lightweight Python client for:
 
   - Simulating API requests
   - Performing smoke tests and validation flows
   - Utilities for authentication and JSON handling
-  - A basic example flow included
 
 - **\_top_level_docs/** — Docs starter:
 
@@ -147,7 +110,11 @@ python manage.py migrate
 python manage.py createsuperuser
 ```
 
-✅ Start developing! 🚀
+✅ Run the Server 🚀
+
+```bash
+python manage.py runserver
+```
 
 ### Optional/Later:
 

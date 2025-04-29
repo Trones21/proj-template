@@ -1,0 +1,98 @@
+services:
+  traefik:
+    image: traefik:v3.3
+    container_name: pk_projName-reverse-proxy
+    labels:
+      - "traefik.enable=true"
+
+      # 🛠️ Route for the Traefik Dashboard
+      - "traefik.http.routers.traefik-dashboard.rule=Host(`pk_host`) && PathPrefix(`/dashboard`)"
+      - "traefik.http.routers.traefik-dashboard.service=api@internal"
+      - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
+      - "traefik.http.routers.traefik-dashboard.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.traefik-dashboard.middlewares=auth-basic"
+
+      # 🔒 Basic Auth Middleware for the Dashboard
+      - "traefik.http.middlewares.auth-basic.basicauth.users=user:$$2y$$05$$LMGgHcKpFjcao8rMx/Zwf.Qa0MHoT/NNH1IJQ27EiXOwy0nSuKqti"
+
+    ports:
+      - "80:80"
+      - "443:443"
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik.yml:/etc/traefik/traefik.yml
+      - ./letsencrypt:/letsencrypt  # Persistent storage for SSL certs
+      - /logs:/var/log/traefik
+    environment:
+      - TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_EMAIL=trones.adm@gmail.com
+      - TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_STORAGE=/letsencrypt/acme.json
+    networks:
+      - traefik-network
+    restart: unless-stopped
+
+  frontend:
+    image: frontend:latest
+    container_name: frontend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`pk_host`)"
+      - "traefik.http.routers.frontend.entrypoints=websecure"
+      - "traefik.http.routers.frontend.tls.certresolver=letsencrypt"
+      - "traefik.http.services.frontend.loadbalancer.server.port=80"
+    networks:
+      - traefik-network
+    depends_on:
+      - traefik
+    restart: unless-stopped
+  
+  backend:
+    image: backend:latest
+    container_name: pk_projName-backend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`api.pk_host`)"
+      - "traefik.http.routers.backend.entrypoints=websecure"
+      - "traefik.http.routers.backend.tls.certresolver=letsencrypt"
+      - "traefik.http.services.backend.loadbalancer.server.port=8080"
+    env_file:
+      - ./.env_prod
+    networks:
+      - traefik-network
+    restart: unless-stopped
+
+
+  # jaeger:
+  #   image: jaegertracing/all-in-one:latest
+  #   container_name: jaeger
+  #   ports:
+  #     - "16686:16686"  # Web UI
+  #     - "6831:6831/udp"
+  #   networks:
+  #     - traefik-network
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      traefik-network:
+        aliases:
+          - traefik
+    depends_on:
+      - traefik
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - traefik-network
+
+networks:
+  traefik-network:
+    external: true

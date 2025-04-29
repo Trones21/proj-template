@@ -1,0 +1,13 @@
+Django==5.1.6
+djangorestframework
+drf-generators
+django-cors-headers
+drf-yasg
+django-keycloak-auth
+psycopg2-binary~=2.8
+mozilla-django-oidc
+pyjwt[crypto]
+django-crum
+django-filter
+django-extensions
+django-sortedm2m

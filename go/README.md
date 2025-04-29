@@ -106,6 +106,27 @@ cd ~/env_setup/<your_project_name>
 # Edit local_backend.sh and prod_backend.sh as needed
 ```
 
+## Local Create DB
+
+Install request flow dependencies (since the create_db script lives there):
+
+```bash
+cd ../request_flows
+pip install -r requirements.txt
+```
+
+[Install Postgres (if not already installed)](https://www.postgresql.org/download/linux/ubuntu/)
+
+✅ Create the database
+
+```bash
+python ~/path-to-project/request_flows/create_db.py
+```
+
+[Apply a standard set of privileges for app_user](https://thomasrones.com/technical/other/postgresql/apply-priv)
+
+---
+
 ✅ Update `deploy.sh`:
 
 - Set your SSH login credentials for deployment.
@@ -121,11 +142,77 @@ cd backend
 go mod tidy
 ```
 
-✅ (Optional) Install request flow dependencies:
+✅ Start developing! 🚀
 
-```bash
-cd ../request_flows
-go mod tidy
+## Basic Structure
+
+I keep the same basic structure for all my applications. Note that Quasar is not currently setup by this script
+
+```txt
++---------------------+
+|  Reverse Proxy      | (Container 1: Traefik)
+|   - / -> Frontend   |
+|   - /api -> Backend |
++---------------------+
+        |           |
++----------------+   +----------------+
+| Frontend        |   | Backend        |
+| Quasar Files    |   | Django      |
+| Running on Nginx|   |                |
++----------------+   +----------------+
+
 ```
 
-✅ Start developing! 🚀
+### Deployment
+
+Current process is build the containers locally (with prod settings) and copy to server
+
+- Remember to backup RDS and migrate(update db schema)!! This is integrated into deployment
+
+This is all in deploy.sh/build_and_deploy.sh.. but here is the general process. Look to the frontend and backend readmes for deep guidance on their containers.
+
+#### On Dev Machine
+
+```bash
+docker-compose build
+
+docker save -o frontend.tar frontend:latest
+docker save -o backend.tar backend:latest
+
+scp frontend.tar backend.tar user@server:/deploypath/
+scp docker-compose.yml user@server:/deploypath/
+```
+
+#### On Server
+
+```bash
+docker load < /deploypath/frontend.tar
+docker load < /deploypath/backend.tar
+# Note: Ensure docker-compose.yml has the correct reference to the containers
+
+#check to see the images
+docker images
+
+# Start the containers!
+docker-compose up -d #detached (run in background, return control to terminal)
+```
+
+#### All about the uris...
+
+Traefik as the Reverse Proxy:
+
+1. Traefik handles the routing and allows you to create clean, logical paths (e.g., /api for backend routes).
+   It decouples your frontend from needing to know the backend's exact service URLs.
+   Backend Routes Stay Clean:
+
+2. The backend (Go app) can maintain simple routes like /someEndpoint without being aware of the reverse proxy.
+
+- This avoids hardcoding /api into your backend code, which might be environment-specific.
+
+3. Frontend Knows the Mapped Path:
+
+- The frontend only needs to call /api/someEndpoint because it’s interacting with Traefik’s routes.
+
+4. Flexibility for Future Changes:
+
+- If I ever need to change the path mapping (e.g., /api to /backend), you only update Traefik’s config without touching the frontend or backend code.

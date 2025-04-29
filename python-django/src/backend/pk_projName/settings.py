@@ -96,11 +96,11 @@ WSGI_APPLICATION = "pk_projName.wsgi.application"
 # PostgreSQL Database Configuration
 DATABASE_CONFIGURATION = {
     "ENGINE": "django.db.backends.postgresql",
-    "NAME": environ.get("POSTGRES_DB_NAME"),
-    "USER": environ.get("POSTGRES_USER"),
-    "PASSWORD": environ.get("POSTGRES_PASSWORD"),
-    "HOST": environ.get("POSTGRES_HOST"),
-    "PORT": "5432",
+    "NAME": environ.get("DB_NAME"),
+    "USER": environ.get("DB_USER"),
+    "PASSWORD": environ.get("DB_PASS"),
+    "HOST": environ.get("DB_HOST"),
+    "PORT": environ.get("DB_PORT"),
 }
 
 DATABASES = {"default": DATABASE_CONFIGURATION}
