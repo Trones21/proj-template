@@ -88,7 +88,7 @@ No unnecessary bloat. No weird dependencies. Just a clean foundation.
 
 ## To-Do After Generation
 
-### Backend
+### Backend Part 1
 
 Open Your Project Folder:
 
@@ -119,7 +119,7 @@ pip install -r requirements.txt
 
 **Tip: If requirements.txt doesnt exist, you can always use `pipreqs`: `pip install pipreqs` then `pipreqs ./`(when pwd is root of project)**
 
-### Local DB Setup
+### Backend Part 2 / Local DB Setup
 
 Install request flow dependencies (since the create_db script lives there):
 
@@ -143,6 +143,8 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
+\*\*Note: `migrate_and_load_fixtures` bundles this up, so its what you will use very often in local development
+
 ✅ Create a Django superuser:
 
 ```bash
@@ -151,8 +153,16 @@ python manage.py createsuperuser
 
 ✅ Start developing! 🚀
 
+```bash
+python manage.py runserver
+```
+
 You can run a simple test by loading the fixtures and running the login_test in the test runner.
 `<Pk_ToDo - Add Video without the example_app items in the list (just the test login) (will create after cleaning noCRUD implementation from examples)>`
+
+Django Note: When running the server in prod, you will use gunicorn, not manage.py's runserver
+Ensure you include `--capture-output` to see the startup logging (also check the LOGGING var in settings.py):
+`gunicorn pk_projName.wsgi:application --bind 0.0.0.0:8000 --access-logfile - --error-logfile - --capture-output`
 
 ### Frontend
 
@@ -238,18 +248,22 @@ Also check out:
 I keep the same basic structure for all my applications. Note that Quasar is not currently setup by this script
 
 ```txt
-+---------------------+
-|  Reverse Proxy      | (Container 1: Traefik)
-|   - / -> Frontend   |
-|   - /api -> Backend |
-+---------------------+
-        |           |
-+----------------+   +----------------+
-| Frontend        |   | Backend        |
-| Quasar Files    |   | Django         |
-| Running on Nginx|   |                |
-+----------------+   +----------------+
-
++-----------------------------------------------------------+
+|       Reverse Proxy    (Container: Traefik)              |
+| Routes:                                                  |
+|   https://domain.com              → Main Frontend        |
+|   https://api.domain.com          → Backend API          |
+|   https://subfrontend.domain.com  → Additional Frontend  |
++----------------------------------------------------------+
+        |                       |                     |
+        v                       v                     v
++------------------+   +----------------------+   +--------------------------+
+| Frontend Container|   | Backend Container   |   | Sub-Frontend Container   |
+| Static via Nginx  |   | Django via Gunicorn |   | Static via Nginx         |
++------------------+   +----------------------+   +--------------------------+
+                            ↑
+                            |
+        All frontends make requests to → https://api.domain.com (or another subdomain.domain.com if we decide we want to offload some service)
 ```
 
 ### Deployment Summary

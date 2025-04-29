@@ -1,37 +1,27 @@
-# Stage 1: Build the Application (Using Python Image)
-FROM python:3.12-slim AS builder
+FROM python:3.12-slim
 
 WORKDIR /app
 
-# Pre-copy/cache requirements for better docker layer caching
-COPY requirements.txt ./
-RUN pip install --upgrade pip && pip install --user -r requirements.txt
+# Install helpful debugging tools
+RUN apt update && apt install -y \
+    curl \
+    net-tools \
+    iputils-ping \
+    procps \
+    nano \
+    && apt clean && rm -rf /var/lib/apt/lists/*
 
-# Copy the source code
-COPY . .
+# (The apt clean & rm -rf reduces image size a little.)
 
-# (Optional) Collect static files if Django uses them
-RUN python manage.py collectstatic --noinput
+# Copy app code
+COPY --from=builder /app /app
 
-# Stage 2: Create the Final Clean Image
-FROM debian:12
+ENV PATH=/root/.local/bin:$PATH
+RUN pip install --upgrade pip && pip install gunicorn
 
-WORKDIR /dist
-
-# Install minimal necessary tools
-RUN apt update && apt install -y curl net-tools iputils-ping procps nano python3 python3-pip
-
-# Copy application files from builder
-COPY --from=builder /app /dist
-
-# Install runtime dependencies (again, usually production deps only)
-COPY requirements.txt ./
-RUN pip install --upgrade pip && pip install -r requirements.txt
-
-# Set environment variables (you can move these to docker-compose too)
-ENV DJANGO_SETTINGS_MODULE=your_project.settings
+ENV DJANGO_SETTINGS_MODULE=pk_projName.settings
 ENV PYTHONUNBUFFERED=1
 
-# Run the application
-CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+EXPOSE 8080
 
+CMD ["gunicorn", "pk_projName.wsgi:application", "--bind", "0.0.0.0:8000"]

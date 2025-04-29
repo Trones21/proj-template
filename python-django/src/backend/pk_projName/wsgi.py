@@ -8,9 +8,14 @@ https://docs.djangoproject.com/en/3.2/howto/deployment/wsgi/
 """
 
 import os
-
+import logging
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pk_projName.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "tnow.settings")
 
-application = get_wsgi_application()
+try:
+    application = get_wsgi_application()
+    logging.getLogger("django").info("✅ Django WSGI app fully loaded and ready.")
+except Exception:
+    logging.getLogger("gunicorn.error").exception("🔥 Django WSGI app failed to start!")
+    raise

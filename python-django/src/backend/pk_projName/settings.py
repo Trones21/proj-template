@@ -61,7 +61,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "mozilla_django_oidc.middleware.SessionRefresh",
     "crum.CurrentRequestUserMiddleware",
-    "pk_projName.middleware.RequestResponseLoggerMiddleware",
+    # "pk_projName.middleware.RequestResponseLoggerMiddleware", # See logging section -- this is kinda redundant
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -88,6 +88,36 @@ TEMPLATES = [
 
 
 WSGI_APPLICATION = "pk_projName.wsgi.application"
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,  # 👈 Important so existing logs (like gunicorn, Django) still work
+    "formatters": {
+        "default": {
+            "format": "[{asctime}] [{levelname}] [{name}] {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "default",
+        },
+    },
+    "loggers": {
+        # 👇 ADD THIS so logs from wsgi.py or anywhere else show up
+        "": {
+            "handlers": ["console"],
+            "level": "INFO",
+        },
+        # Keep existing Django request logging
+        "django.request": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+}
 
 
 # Database
