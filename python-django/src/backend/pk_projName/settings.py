@@ -61,7 +61,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "mozilla_django_oidc.middleware.SessionRefresh",
     "crum.CurrentRequestUserMiddleware",
-    # "pk_projName.middleware.RequestResponseLoggerMiddleware", # See logging section -- this is kinda redundant
+    # "pk_projName.middleware.RequestResponseLoggerMiddleware", # See logging section -- this is kinda redundant when rnning with certain gunicorn flags...
 ]
 
 AUTHENTICATION_BACKENDS = [
